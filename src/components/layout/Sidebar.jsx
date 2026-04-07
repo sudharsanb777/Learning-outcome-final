@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, 
@@ -11,6 +12,7 @@ import {
 } from 'lucide-react';
 
 const Sidebar = ({ role }) => {
+  const navigate = useNavigate();
   const getNavItems = () => {
     switch (role) {
       case 'admin':
@@ -82,7 +84,7 @@ const Sidebar = ({ role }) => {
       </nav>
 
       <div className="sidebar-footer">
-        <button style={{ 
+        <button onClick={() => { navigate('/login'); window.location.reload(); }} style={{ 
           width: '100%', 
           display: 'flex', 
           alignItems: 'center', 

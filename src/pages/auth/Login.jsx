@@ -2,27 +2,36 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, LogIn, AlertCircle } from 'lucide-react';
 import '../../styles/auth.css';
+import LoadingSpinner from '../../components/common/LoadingSpinner';
+import { useData } from '../../context/DataContext';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+
+    const { data } = useData();
 
     const handleLogin = (e) => {
         e.preventDefault();
         setError('');
+        setLoading(true);
 
-        // Mock login logic
-        if (email.toLowerCase().includes('admin')) {
-            navigate('/admin');
-        } else if (email.toLowerCase().includes('faculty')) {
-            navigate('/faculty');
-        } else if (email.toLowerCase().includes('student')) {
-            navigate('/student');
-        } else {
-            setError('Invalid credentials. Please check your email and password.');
-        }
+        // Simulate async auth check and use real seeded users if available
+        setTimeout(() => {
+            setLoading(false);
+            const found = data.users.find(u => u.email.toLowerCase() === email.toLowerCase());
+            if (found) {
+                if (found.role === 'admin') navigate('/admin');
+                else if (found.role === 'faculty') navigate('/faculty');
+                else if (found.role === 'student') navigate('/student');
+                else setError('Unknown role for this account.');
+            } else {
+                setError('Invalid credentials. Please enter a seeded user email (see demo list).');
+            }
+        }, 600);
     };
 
     return (
@@ -80,13 +89,18 @@ const Login = () => {
                         </div>
                     </div>
 
-                    <button type="submit" className="auth-button">
-                        <LogIn size={20} />
-                        Sign In
+                    <button type="submit" className="auth-button" disabled={loading}>
+                        {loading ? <LoadingSpinner size={18} /> : <LogIn size={20} />}
+                        {loading ? 'Signing in...' : 'Sign In'}
                     </button>
 
                     <div className="auth-footer">
-                        <p>Demo Credentials: <b>admin</b>, <b>faculty</b>, or <b>student</b> in email.</p>
+                        <p>Demo accounts (use email):</p>
+                        <ul style={{ listStyle: 'none', paddingLeft: 0, fontSize: '0.9rem' }}>
+                            <li><b>Admin:</b> admin@uni.edu</li>
+                            <li><b>Faculty:</b> jane.smith@uni.edu, robert.brown@uni.edu, emily.clarke@uni.edu</li>
+                            <li><b>Students:</b> alice.williams@uni.edu, bob.johnson@uni.edu, charlie.davies@uni.edu</li>
+                        </ul>
                     </div>
                 </form>
             </div>

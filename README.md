@@ -1,16 +1,56 @@
-# React + Vite
+# Learning Outcome (React + Vite + Express + MySQL)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This repository is a small learning-outcome management app:
 
-Currently, two official plugins are available:
+- Frontend: React (Vite) at [src/main.jsx](src/main.jsx#L1-L20) and routes in [src/App.jsx](src/App.jsx#L1-L80).
+- Backend: Express API at [backend/server.js](backend/server.js#L1-L40).
+- Database: MySQL schema and seeder at [backend/database/schema.sql](backend/database/schema.sql#L1-L40) and [backend/database/seed.js](backend/database/seed.js#L1-L200).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Quick start (development)
 
-## React Compiler
+1. Install root (frontend) deps:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+npm install
+```
 
-## Expanding the ESLint configuration
+2. Install backend deps and create `.env` (from example):
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+cd backend
+npm install
+copy .env.example .env
+# edit .env and set DB_PASSWORD (Windows PowerShell: `notepad .env`)
+```
+
+3. Seed the database (creates `lom_db` and inserts sample data):
+
+```bash
+# from backend folder
+node database/seed.js
+```
+
+4. Start backend and frontend (in two shells):
+
+```bash
+# backend (from backend folder)
+npm run start
+
+# frontend (from project root)
+npm run dev
+```
+
+API health check
+
+```bash
+curl http://localhost:5000/api/health
+curl http://localhost:5000/api/users
+```
+
+Notes & next improvements
+
+- Add tests (Jest/RTL for frontend, supertest/mocha for backend).
+- Improve UI consistency and add loading/error states (I added a spinner and improved login UX).
+- Add a `start`/`dev` script for the backend and a `.env.example` file.
+
+If you'd like, I can now run linting, scaffold tests, or continue polishing UI components.
