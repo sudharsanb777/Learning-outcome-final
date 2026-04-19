@@ -22,7 +22,11 @@ const Login = () => {
         // Simulate async auth check and use real seeded users if available
         setTimeout(() => {
             setLoading(false);
-            const found = data.users.find(u => u.email.toLowerCase() === email.toLowerCase());
+            
+            // Allow logging in with just the username (e.g. 'jane.smith') instead of full email
+            const searchEmail = email.includes('@') ? email : `${email}@uni.edu`;
+            
+            const found = data.users.find(u => u.email.toLowerCase() === searchEmail.toLowerCase());
             if (found) {
                 if (found.role === 'admin') navigate('/admin');
                 else if (found.role === 'faculty') navigate('/faculty');
