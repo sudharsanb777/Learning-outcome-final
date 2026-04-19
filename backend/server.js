@@ -35,7 +35,10 @@ app.get('/api/build-db', async (req, res) => {
     try {
         const schemaPath = path.resolve('database/schema.sql');
         const schema = fs.readFileSync(schemaPath, 'utf8');
-        await pool.query(schema);
+        const statements = schema.split(';').filter(s => s.trim().length > 0);
+        for (let statement of statements) {
+            await pool.query(statement + ';');
+        }
         res.json({ message: "WOW! Database tables and schema successfully built in TiDB!" });
     } catch (err) {
         res.status(500).json({ error: err.message, stack: err.stack });
