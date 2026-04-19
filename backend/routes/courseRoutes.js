@@ -6,7 +6,7 @@ const router = express.Router();
 // GET all courses
 router.get('/', async (req, res) => {
     try {
-        const { rows } = await pool.query('SELECT * FROM courses');
+        const [rows] = await pool.query('SELECT * FROM courses');
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -17,11 +17,11 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     const { code, title, credits, semester, facultyId } = req.body;
     try {
-        const { rows } = await pool.query(
-            'INSERT INTO courses (code, title, credits, semester, "facultyId") VALUES ($1, $2, $3, $4, $5) RETURNING id',
+        const [result] = await pool.query(
+            'INSERT INTO courses (code, title, credits, semester, facultyId) VALUES (?, ?, ?, ?, ?)',
             [code, title, credits, semester, facultyId || null]
         );
-        res.status(201).json({ id: rows[0].id, code, title, credits, semester, facultyId });
+        res.status(201).json({ id: result.insertId, code, title, credits, semester, facultyId });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -32,7 +32,7 @@ router.put('/:id', async (req, res) => {
     const { code, title, credits, semester, facultyId } = req.body;
     try {
         await pool.query(
-            'UPDATE courses SET code = $1, title = $2, credits = $3, semester = $4, "facultyId" = $5 WHERE id = $6',
+            'UPDATE courses SET code = ?, title = ?, credits = ?, semester = ?, facultyId = ? WHERE id = ?',
             [code, title, credits, semester, facultyId || null, req.params.id]
         );
         res.json({ message: 'Course updated successfully' });
@@ -44,7 +44,7 @@ router.put('/:id', async (req, res) => {
 // DELETE course
 router.delete('/:id', async (req, res) => {
     try {
-        await pool.query('DELETE FROM courses WHERE id = $1', [req.params.id]);
+        await pool.query('DELETE FROM courses WHERE id = ?', [req.params.id]);
         res.json({ message: 'Course deleted successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });
