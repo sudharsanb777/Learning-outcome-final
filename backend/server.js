@@ -44,6 +44,29 @@ app.get('/api/build-db', async (req, res) => {
         res.status(500).json({ error: err.message, stack: err.stack });
     }
 });
+app.get('/api/seed-db', async (req, res) => {
+    try {
+        const users = [
+            { id: 1, name: 'Aisha Khan', email: 'admin@uni.edu', role: 'admin', status: 'Active', department: 'Administration', enrollmentYear: null, major: null },
+            { id: 2, name: 'Dr. Jane Smith', email: 'jane.smith@uni.edu', role: 'faculty', status: 'Active', department: 'Computer Science', enrollmentYear: null, major: null },
+            { id: 3, name: 'Dr. Robert Brown', email: 'robert.brown@uni.edu', role: 'faculty', status: 'Active', department: 'Software Engineering', enrollmentYear: null, major: null },
+            { id: 6, name: 'Dr. Emily Clarke', email: 'emily.clarke@uni.edu', role: 'faculty', status: 'Active', department: 'Information Systems', enrollmentYear: null, major: null },
+            { id: 4, name: 'Alice Williams', email: 'alice.williams@uni.edu', role: 'student', status: 'Active', department: 'Computer Science', enrollmentYear: 2023, major: 'CS' },
+            { id: 5, name: 'Bob Johnson', email: 'bob.johnson@uni.edu', role: 'student', status: 'Active', department: 'Computer Science', enrollmentYear: 2023, major: 'CS' },
+            { id: 7, name: 'Charlie Davies', email: 'charlie.davies@uni.edu', role: 'student', status: 'Active', department: 'Software Engineering', enrollmentYear: 2022, major: 'SE' }
+        ];
+        for (const user of users) {
+             await pool.query(
+                `INSERT IGNORE INTO users (id, name, email, role, status, department, enrollmentYear, major) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                [user.id, user.name, user.email, user.role, user.status, user.department, user.enrollmentYear, user.major]
+            );
+        }
+        res.json({ message: "SUCCESS! Accounts injected. You can login as admin!" });
+    } catch (err) {
+        res.status(500).json({ error: err.message, stack: err.stack });
+    }
+});
+
 
 app.get('/api/health', (req, res) => {
     res.json({ status: 'API is running beautifully connected to MySQL!' });
