@@ -57,10 +57,13 @@ app.get('/api/seed-db', async (req, res) => {
             { id: 5, name: 'Bob Johnson', email: 'bob.johnson@uni.edu', role: 'student', status: 'Active', department: 'Computer Science', enrollmentYear: 2023, major: 'CS' },
             { id: 7, name: 'Charlie Davies', email: 'charlie.davies@uni.edu', role: 'student', status: 'Active', department: 'Software Engineering', enrollmentYear: 2022, major: 'SE' }
         ];
+        const bcrypt = await import('bcryptjs');
+        const defaultPassword = await bcrypt.hash('password123', 10);
+        
         for (const user of users) {
              await pool.query(
                 `INSERT IGNORE INTO users (id, name, email, password, role, status, department, enrollmentYear, major) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [user.id, user.name, user.email, '$2a$10$C82A2H9Wn8/wSReeMvI9nOmT9yqjG2S3IebTjUZZW9kP/868hC1Bq', user.role, user.status, user.department, user.enrollmentYear, user.major]
+                [user.id, user.name, user.email, defaultPassword, user.role, user.status, user.department, user.enrollmentYear, user.major]
             );
         }
         res.json({ message: "SUCCESS! Accounts injected. You can login as admin!" });
