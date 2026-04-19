@@ -95,6 +95,15 @@ const Login = () => {
                             Don't have an account? <Link to="/register" style={{ color: 'var(--primary-color)', fontWeight: 500, textDecoration: 'none' }}>Sign Up here</Link>
                         </p>
                     </div>
+
+                    <div className="auth-footer" style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-color)', textAlign: 'left', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                        <p style={{ fontWeight: 600, marginBottom: '0.5rem' }}>Demo accounts (Password: password123):</p>
+                        <ul style={{ listStyle: 'none', paddingLeft: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            <li><b>Admin:</b> admin@uni.edu</li>
+                            <li><b>Faculty:</b> jane.smith@uni.edu</li>
+                            <li><b>Student:</b> alice.williams@uni.edu</li>
+                        </ul>
+                    </div>
                 </form>
             </div>
         </div>
