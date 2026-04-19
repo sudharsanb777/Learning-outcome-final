@@ -6,7 +6,7 @@ const router = express.Router();
 // GET all PLOs
 router.get('/', async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM plos');
+        const { rows } = await pool.query('SELECT * FROM plos');
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -17,11 +17,11 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     const { code, description, status } = req.body;
     try {
-        const [result] = await pool.query(
-            'INSERT INTO plos (code, description, status) VALUES (?, ?, ?)',
+        const { rows } = await pool.query(
+            'INSERT INTO plos (code, description, status) VALUES ($1, $2, $3) RETURNING id',
             [code, description, status || 'Active']
         );
-        res.status(201).json({ id: result.insertId, code, description, status });
+        res.status(201).json({ id: rows[0].id, code, description, status });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -32,7 +32,7 @@ router.put('/:id', async (req, res) => {
     const { code, description, status } = req.body;
     try {
         await pool.query(
-            'UPDATE plos SET code = ?, description = ?, status = ? WHERE id = ?',
+            'UPDATE plos SET code = $1, description = $2, status = $3 WHERE id = $4',
             [code, description, status, req.params.id]
         );
         res.json({ message: 'PLO updated successfully' });
@@ -44,7 +44,7 @@ router.put('/:id', async (req, res) => {
 // DELETE PLO
 router.delete('/:id', async (req, res) => {
     try {
-        await pool.query('DELETE FROM plos WHERE id = ?', [req.params.id]);
+        await pool.query('DELETE FROM plos WHERE id = $1', [req.params.id]);
         res.json({ message: 'PLO deleted successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });
