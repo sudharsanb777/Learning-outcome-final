@@ -8,6 +8,7 @@ import cloRoutes from './routes/cloRoutes.js';
 import mappingRoutes from './routes/mappingRoutes.js';
 import enrollmentRoutes from './routes/enrollmentRoutes.js';
 import assessmentRoutes from './routes/assessmentRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/plos', ploRoutes);
 app.use('/api/courses', courseRoutes);
@@ -57,8 +59,8 @@ app.get('/api/seed-db', async (req, res) => {
         ];
         for (const user of users) {
              await pool.query(
-                `INSERT IGNORE INTO users (id, name, email, role, status, department, enrollmentYear, major) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-                [user.id, user.name, user.email, user.role, user.status, user.department, user.enrollmentYear, user.major]
+                `INSERT IGNORE INTO users (id, name, email, password, role, status, department, enrollmentYear, major) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [user.id, user.name, user.email, '$2a$10$C82A2H9Wn8/wSReeMvI9nOmT9yqjG2S3IebTjUZZW9kP/868hC1Bq', user.role, user.status, user.department, user.enrollmentYear, user.major]
             );
         }
         res.json({ message: "SUCCESS! Accounts injected. You can login as admin!" });
